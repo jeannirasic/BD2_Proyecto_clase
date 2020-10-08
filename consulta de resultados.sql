@@ -173,6 +173,44 @@ select  id_equipo, nombre_equipo, max(puntos) puntos from show_tabla_res
 			group by id_temporada ) campeones group by id_equipo order by veces_campeon desc limit 5;
 
 
+-- ██████╗░   Realizar una stored procedure que muestre que equipos 
+-- ██╔══██╗   descendieron y no aparecen en la temporada que se 
+-- ██║░░██║   envíe por parámetro.
+-- ██║░░██║
+-- ██████╔╝
+-- ╚═════╝░
+
+
+DROP PROCEDURE IF EXISTS PROC_DESCALIFICADO_TEMP_ANTERIOR_D;
+delimiter //
+CREATE PROCEDURE PROC_DESCALIFICADO_TEMP_ANTERIOR_D(IN temporada varchar(500))
+BEGIN 
+	DECLARE temp INT default null;
+    DECLARE TEMP_ACTUAL INT DEFAULT NULL;
+    DECLARE VTEMP_ACTUAL varchar(500) DEFAULT '';
+    DECLARE TEMP_ANT INT DEFAULT NULL; 
+    DECLARE VTEMP_ANT VARCHAR(500) DEFAULT ''; 
+    select  id_temporada, (anio_fin - 1), nombre_temporada  INTO TEMP_ACTUAL, temp, VTEMP_ACTUAL from temporada where id_temporada = temporada or nombre_temporada = temporada limit 1;
+--    select  id_temporada INTO TEMP_ACTUAL from temporada where id_temporada = temporada or nombre_temporada = temporada limit 1;
+--    SELECT (anio_fin - 1) into temp  FROM temporada where id_temporada = TEMP_ACTUAL;
+
+    select  id_temporada, nombre_temporada into TEMP_ANT, VTEMP_ANT from temporada where anio_fin = temp; 
+    
+    
+    if TEMP_ANT is null then 
+		select concat('No hay registros del año ' , temp) as 'Info';
+    else 
+		select nombre_equipo 
+        , VTEMP_ANT 'Aparece en', VTEMP_ACTUAL 'No aparece'
+        from partido , equipo where (equipo.id_equipo = partido.id_equipo_local or equipo.id_equipo = partido.id_equipo_visitante)
+        and id_temporada_partido = TEMP_ANT and (partido.id_equipo_local  not in (select id_equipo_local from partido where id_temporada_partido = TEMP_ACTUAL )
+        and partido.id_equipo_visitante  not in (select id_equipo_visitante from partido where id_temporada_partido = TEMP_ACTUAL )) 
+        group by id_equipo ;
+    end if;
+END //
+delimiter ;
+
+call PROC_DESCALIFICADO_TEMP_ANTERIOR_D(40);
 
 
 -- ░█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀█ █▀▀█ 

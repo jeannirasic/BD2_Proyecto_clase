@@ -160,6 +160,18 @@ group by ta.id_temporada order by ta.id_temporada desc, t4.puntos desc;
 -- Probando la vista 
 select * from primeros4_por_temporada_B;
 
+-- ░█████╗░  Consulta que muestre los equipos que ha ganado 
+-- ██╔══██╗  la liga más veces en los últimos 20 años (TOP 5)
+-- ██║░░╚═╝
+-- ██║░░██╗
+-- ╚█████╔╝
+-- ░╚════╝░
+
+
+select  nombre_equipo , count(nombre_equipo) as veces_campeon from (
+select  id_equipo, nombre_equipo, max(puntos) puntos from show_tabla_res
+			group by id_temporada ) campeones group by id_equipo order by veces_campeon desc limit 5;
+
 
 
 

@@ -49,7 +49,7 @@ CREATE TABLE CARGA(
 #SET GLOBAL local_infile='ON';
 
 #CARGA MASIVA 14,935-------------------------------------------------------------------------------------------------------------------------------------
-LOAD DATA INFILE 'C:/Users/Public/Downloads/Datos_futbol.csv'
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Datos_futbol.csv'
 INTO TABLE CARGA
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'

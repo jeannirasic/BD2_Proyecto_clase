@@ -1,6 +1,8 @@
 /*select * from partido; 
 select * from equipo; 
-select * from temporada; 
+select * from temporada
+select * from jornada;
+; 
 
 select eqL.nombre_equipo , goles_local, eqV.nombre_equipo, goles_visitante from partido, equipo as eqv, equipo as eqL where id_temporada_partido = 1
 and eqv.id_equipo = partido.id_equipo_visitante and eqL.id_equipo = partido.id_equipo_local;*/

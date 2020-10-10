@@ -48,7 +48,7 @@ CREATE TABLE CARGA(
 #SHOW VARIABLES LIKE 'local_infile';
 #SET GLOBAL local_infile='ON';
 
-#CARGA MASIVA 14,935-------------------------------------------------------------------------------------------------------------------------------------
+#CARGA MASIVA 15,241-------------------------------------------------------------------------------------------------------------------------------------
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Datos_futbol.csv'
 INTO TABLE CARGA
 FIELDS TERMINATED BY ','

@@ -2,6 +2,7 @@
 ===========================INCISO E===========================
 */
 use BD2PROYECTO;
+DROP VIEW IF EXISTS VICTIMA_FAVORITA;
 CREATE VIEW VICTIMA_FAVORITA AS
 	SELECT E1.NOMBRE_EQUIPO AS EQUIPO_GANADOR, PARTIDO.RESULTADO_PARTIDO AS RESULTADO, E2.NOMBRE_EQUIPO AS EQUIPO_PERDEDOR, 
 			PARTIDO.GOLES_LOCAL AS GOLES_LOCAL, PARTIDO.GOLES_VISITANTE AS GOLES_VISITA, PARTIDO.FECHA_PARTIDO AS FECHA
@@ -24,7 +25,7 @@ WHERE EQUIPO_GANADOR='Barcelona'
 group by EQUIPO_PERDEDOR
 order by NUM_VICTORIAS DESC LIMIT 1; 
 
-DROP VIEW IF EXISTS VICTIMA_FAVORITA;
+
 
 /*
 ===========================INCISO F===========================
@@ -158,6 +159,7 @@ LIMIT 1
 /*
 ===========================INCISO H===========================
 */
+drop TABLE if exists PRIMEROS_LUGARES_POR_JORNADA;
 
 CREATE TABLE PRIMEROS_LUGARES_POR_JORNADA(
 	posicion int,
@@ -167,7 +169,6 @@ CREATE TABLE PRIMEROS_LUGARES_POR_JORNADA(
     jornada int
 );
 
-drop TABLE PRIMEROS_LUGARES_POR_JORNADA;
 
 drop procedure if exists PROC_HISTORIAL_PRIMER_PUESTO_POR_TEMPORADA;
 delimiter //
@@ -175,7 +176,7 @@ CREATE PROCEDURE PROC_HISTORIAL_PRIMER_PUESTO_POR_TEMPORADA(IN nId_Temporada int
 BEGIN
 	declare num_jornadas integer;
     declare num_equipos integer;
-    delete from PRIMEROS_LUGARES_POR_JORNADA;
+    truncate PRIMEROS_LUGARES_POR_JORNADA;
     if nId_Temporada<9 then
 		set num_jornadas=34;
         set num_equipos=18;
@@ -235,7 +236,7 @@ CREATE PROCEDURE PROC_HISTORIAL_ULTIMO_PUESTO_POR_TEMPORADA(IN nId_Temporada int
 BEGIN
 	declare num_jornadas integer;
     declare num_equipos integer;
-    delete from PRIMEROS_LUGARES_POR_JORNADA;
+    truncate PRIMEROS_LUGARES_POR_JORNADA;
     if nId_Temporada<9 then
 		set num_jornadas=34;
         set num_equipos=18;

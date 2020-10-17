@@ -20,7 +20,8 @@ delimiter //
 CREATE PROCEDURE PROC_TABLA_POSICIONES_A(IN id_temp varchar(500), IN jornada INT, IN fecha DATE)
 BEGIN 
 	if jornada is not null then 
-    		select   nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 + PE)) as 'Puntos' , sum(pj) as 'PJ', sum(pg) as 'PG', sum(PE) as 'PE', sum(PP) as 'PP', sum(GF) as 'GF', sum(GC) as 'GC', id_temporada, nombre_temporada from (
+    		select   nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 + PE)) as 'Puntos' , sum(pj) as 'PJ', sum(pg) as 'PG', sum(PE) as 'PE', sum(PP) as 'PP', sum(GF) as 'GF', sum(GC) as 'GC', id_temporada, nombre_temporada ,sum(GF)-sum(GC) as dif
+            from (
 			(
 			select temporada.id_temporada, temporada.nombre_temporada, eqL.id_equipo, eqL.nombre_equipo, count(*) as 'PJ', sum(if(goles_local > goles_visitante, 1 , 0)) as 'PG', 
 				sum(if(goles_local = goles_visitante, 1 , 0)) as 'PE', sum(if(goles_local < goles_visitante, 1 , 0)) as 'PP',
@@ -39,10 +40,10 @@ BEGIN
 			and eqv.id_equipo = partido.id_equipo_visitante  and temporada.id_temporada = partido.id_temporada_partido
             and partido.id_jornada_partido <= jornada
 			group by id_temporada , eqv.id_equipo 
-			)) as algo group by id_temporada ,  id_equipo order by id_temporada desc,  Puntos desc;
+			)) as algo group by id_temporada ,  id_equipo order by id_temporada desc,  Puntos desc, dif desc;
     elseif fecha is not null then 
-    
-    		select   nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 + PE)) as 'Puntos' , sum(pj) as 'PJ', sum(pg) as 'PG', sum(PE) as 'PE', sum(PP) as 'PP', sum(GF) as 'GF', sum(GC) as 'GC', id_temporada, nombre_temporada from (
+    		select   nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 + PE)) as 'Puntos' , sum(pj) as 'PJ', sum(pg) as 'PG', sum(PE) as 'PE', sum(PP) as 'PP', sum(GF) as 'GF', sum(GC) as 'GC', id_temporada, nombre_temporada, sum(GF)-sum(GC) as dif
+            from (
 			(
 			select temporada.id_temporada, temporada.nombre_temporada, eqL.id_equipo, eqL.nombre_equipo, count(*) as 'PJ', sum(if(goles_local > goles_visitante, 1 , 0)) as 'PG', 
 				sum(if(goles_local = goles_visitante, 1 , 0)) as 'PE', sum(if(goles_local < goles_visitante, 1 , 0)) as 'PP',
@@ -61,9 +62,10 @@ BEGIN
 			and eqv.id_equipo = partido.id_equipo_visitante  and temporada.id_temporada = partido.id_temporada_partido
             and partido.fecha_partido <= fecha
 			group by id_temporada , eqv.id_equipo 
-			)) as algo group by id_temporada ,  id_equipo order by id_temporada desc, Puntos desc;
+			)) as algo group by id_temporada ,  id_equipo order by id_temporada desc, Puntos desc, dif desc;
     else 
-		select   nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 + PE)) as 'Puntos' , sum(pj) as 'PJ', sum(pg) as 'PG', sum(PE) as 'PE', sum(PP) as 'PP', sum(GF) as 'GF', sum(GC) as 'GC', id_temporada, nombre_temporada from (
+		select   nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 + PE)) as 'Puntos' , sum(pj) as 'PJ', sum(pg) as 'PG', sum(PE) as 'PE', sum(PP) as 'PP', sum(GF) as 'GF', sum(GC) as 'GC', id_temporada, nombre_temporada , sum(GF)-sum(GC) as dif
+        from (
 	-- select  * from (
 		(
 		select temporada.id_temporada, temporada.nombre_temporada, eqL.id_equipo, eqL.nombre_equipo, count(*) as 'PJ', sum(if(goles_local > goles_visitante, 1 , 0)) as 'PG', 
@@ -81,7 +83,7 @@ BEGIN
 		 from partido,  equipo as eqV, temporada where (id_temporada = ID_TEMP OR nombre_temporada  LIKE ID_TEMP)
 		and eqv.id_equipo = partido.id_equipo_visitante  and temporada.id_temporada = partido.id_temporada_partido
 		group by id_temporada , eqv.id_equipo 
-		)) as algo group by id_temporada , id_equipo order by id_temporada desc,  Puntos desc;
+		)) as algo group by id_temporada , id_equipo order by id_temporada desc,  Puntos desc, dif desc;
     end if;
 	
 END //
@@ -120,7 +122,8 @@ la union da solo 740 datos y no los 5279102 de la vez pasada.
 
 DROP VIEW IF EXISTS show_tabla_res ;
 CREATE VIEW show_tabla_res AS
-select id_equipo,  nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 + PE)) as 'Puntos' , sum(pj) as 'PJ', sum(pg) as 'PG', sum(PE) as 'PE', sum(PP) as 'PP', sum(GF) as 'GF', sum(GC) as 'GC', id_temporada, nombre_temporada from (
+select id_equipo,  nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 + PE)) as 'Puntos' , sum(pj) as 'PJ', sum(pg) as 'PG', sum(PE) as 'PE', sum(PP) as 'PP', sum(GF) as 'GF', sum(GC) as 'GC', id_temporada, nombre_temporada , sum(GF)-sum(GC) as dif
+from (
 	-- select  * from (
 		(
 		select temporada.id_temporada, temporada.nombre_temporada, eqL.id_equipo, eqL.nombre_equipo, count(*) as 'PJ', sum(if(goles_local > goles_visitante, 1 , 0)) as 'PG', 
@@ -138,7 +141,7 @@ select id_equipo,  nombre_equipo,sum(if(anio_fin <= 1995, PG * 2 + PE,  PG * 3 +
 		 from partido,  equipo as eqV, temporada where  eqv.id_equipo = partido.id_equipo_visitante  and 
          temporada.id_temporada = partido.id_temporada_partido
 		group by id_temporada, eqv.id_equipo 
-		)) as algo group by id_temporada , id_equipo  order by id_temporada desc,   Puntos desc;
+		)) as algo group by id_temporada , id_equipo  order by id_temporada desc,   Puntos desc, dif desc;
 
 -- Creando la vista
 
@@ -167,9 +170,11 @@ select * from primeros4_por_temporada_B;
 -- ╚█████╔╝
 -- ░╚════╝░
 
+-- select * from show_tabla_res where nombre_temporada like '2%-%';;
+-- select * from temporada where nombre_temporada like '2%-%';
 
 select  nombre_equipo , count(nombre_equipo) as veces_campeon from (
-select  id_equipo, nombre_equipo, max(puntos) puntos from show_tabla_res
+select  id_equipo, nombre_equipo, max(puntos) puntos from show_tabla_res where nombre_temporada like '2%-%'
 			group by id_temporada ) campeones group by id_equipo order by veces_campeon desc limit 5;
 
 
@@ -222,6 +227,14 @@ call PROC_TABLA_POSICIONES_A('%-2020', null , null);
 -- B
 select * from primeros4_por_temporada_B;
 -- C
+select  nombre_equipo , count(nombre_equipo) as veces_campeon from (
+select  id_equipo, nombre_equipo, max(puntos) puntos from show_tabla_res where nombre_temporada like '2%-%'
+			group by id_temporada ) campeones group by id_equipo order by veces_campeon desc limit 5;
 -- D 
--- E
+call PROC_DESCALIFICADO_TEMP_ANTERIOR_D(40);
 -- F
+-- G
+-- H 
+-- I 
+-- J 
+-- K 

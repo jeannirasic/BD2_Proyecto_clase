@@ -36,6 +36,7 @@ CREATE TABLE PARTIDO(
     CONSTRAINT id_equipo_visitante FOREIGN KEY(id_equipo_visitante) REFERENCES EQUIPO(id_equipo)
 );
 
+
 CREATE TABLE CARGA(
 	ronda VARCHAR(100) NOT NULL,
     fecha VARCHAR(100) NOT NULL,

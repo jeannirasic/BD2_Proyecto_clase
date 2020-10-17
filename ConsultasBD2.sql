@@ -1,6 +1,7 @@
 /*
 ===========================INCISO E===========================
 */
+use BD2PROYECTO;
 CREATE VIEW VICTIMA_FAVORITA AS
 	SELECT E1.NOMBRE_EQUIPO AS EQUIPO_GANADOR, PARTIDO.RESULTADO_PARTIDO AS RESULTADO, E2.NOMBRE_EQUIPO AS EQUIPO_PERDEDOR, 
 			PARTIDO.GOLES_LOCAL AS GOLES_LOCAL, PARTIDO.GOLES_VISITANTE AS GOLES_VISITA, PARTIDO.FECHA_PARTIDO AS FECHA
@@ -21,7 +22,7 @@ SELECT COUNT(*) AS NUM_VICTORIAS, EQUIPO_PERDEDOR AS VICTIMA
 FROM VICTIMA_FAVORITA
 WHERE EQUIPO_GANADOR='Barcelona'
 group by EQUIPO_PERDEDOR
-order by NUM_VICTORIAS DESC; 
+order by NUM_VICTORIAS DESC LIMIT 1; 
 
 DROP VIEW IF EXISTS VICTIMA_FAVORITA;
 
@@ -219,11 +220,11 @@ BEGIN
 			LIMIT 1;
 			set num_jornadas=num_jornadas-1;
         end while;
+        select * from PRIMEROS_LUGARES_POR_JORNADA group by posicion, nombre_equipo, fecha, puntos, jornada order by jornada asc;
 END //
 delimiter ;
 
-call PROC_HISTORIAL_PRIMER_PUESTO_POR_TEMPORADA(41);
-select * from PRIMEROS_LUGARES_POR_JORNADA group by posicion, nombre_equipo, fecha, puntos, jornada order by jornada asc;
+call PROC_HISTORIAL_PRIMER_PUESTO_POR_TEMPORADA(1);
 
 /*
 ===========================INCISO I===========================
@@ -278,14 +279,14 @@ BEGIN
 			where partido.id_jornada_partido=num_jornadas and
 			temporada.nombre_temporada=temporada and 
 			partido.id_temporada_partido=temporada.id_temporada
-            ) as algo3 where posicion=18 group by posicion, nombre_equipo, fecha, puntos, jornada order by puntos asc, dif asc LIMIT 1;
+            ) as algo3 where posicion=num_equipos group by posicion, nombre_equipo, fecha, puntos, jornada order by puntos asc, dif asc LIMIT 1;
 			set num_jornadas=num_jornadas-1;
         end while;
+        select * from PRIMEROS_LUGARES_POR_JORNADA group by posicion, nombre_equipo, fecha, puntos, jornada order by jornada asc;
 END //
 delimiter ;
 
-call PROC_HISTORIAL_ULTIMO_PUESTO_POR_TEMPORADA(1);
-select * from PRIMEROS_LUGARES_POR_JORNADA group by posicion, nombre_equipo, fecha, puntos, jornada order by jornada asc;
+call PROC_HISTORIAL_ULTIMO_PUESTO_POR_TEMPORADA(17);
 
 /*
 ===========================INCISO J===========================

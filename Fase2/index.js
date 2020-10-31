@@ -26,7 +26,6 @@ const cargaSchema = new mongoose.Schema({
     Resultado:{type:String},
     Visitante:{type:String},
     Anio:{type:String},
-    LocBien:{type:String},
 },{collection: "CARGA"});
 const carga= mongoose.model("Carga",cargaSchema);
 

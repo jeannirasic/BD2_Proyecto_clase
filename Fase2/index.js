@@ -32,6 +32,7 @@ const carga= mongoose.model("Carga",cargaSchema);
 //---------------------------------------------------ENDPOINTS------------------------------------------------------------
 const prueba = require('./endpoints/prueba')(app,carga);
 const incisoE = require('./endpoints/incisoE')(app,carga);
+const incisoF = require('./endpoints/incisoF')(app,carga);
 
 
 app.listen(3000, () => console.log('escuchando en puerto 3000'));

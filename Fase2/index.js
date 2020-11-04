@@ -36,6 +36,7 @@ const incisoF = require('./endpoints/incisoF')(app,carga);
 const incisoG = require('./endpoints/incisoG')(app,carga);
 const incisoH = require('./endpoints/incisoH')(app,carga);
 const incisoI = require('./endpoints/incisoI')(app,carga);
+const incisoJ = require('./endpoints/incisoJ')(app,carga);
 
 
 app.listen(3000, () => console.log('escuchando en puerto 3000'));

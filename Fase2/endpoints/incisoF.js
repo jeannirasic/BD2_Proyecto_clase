@@ -6,8 +6,9 @@ module.exports = (app, carga) => {
                 let lista_partidos = [];
                 for (let i = 0; i < response.length; i++) {
                     var resultado = response[i].Resultado;
-                    var golesLocal = Number(resultado.substring(0, 1));
-                    var golesVisita = Number(resultado.substring(2, 3));
+                    var spl=resultado.split("—")
+                    var golesLocal = Number(spl[0]);
+                    var golesVisita = Number(spl[1]);
                     var partido = {
                         local: response[i].Local,
                         visitante: response[i].Visitante,
@@ -175,7 +176,7 @@ module.exports = (app, carga) => {
                     lista_tablas[j].equipos.sort(function (a, b) {
                         let i = 0, result = 0;
                         while (i < sortBy.length && result == 0) {
-                            result = sortBy[i].direction * (a[sortBy[i].prop].toString() < b[sortBy[i].prop].toString() ? -1 : (a[sortBy[i].prop].toString() > b[sortBy[i].prop].toString() ? 1 : 0));
+                            result = sortBy[i].direction * (a[sortBy[i].prop] < b[sortBy[i].prop] ? -1 : (a[sortBy[i].prop] > b[sortBy[i].prop] ? 1 : 0));
                             i++;
                         }
                         return result;

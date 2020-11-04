@@ -1,5 +1,5 @@
 module.exports = (app, carga) => {
-    app.get('/incisoJ', (req, res) => {
+    app.get('/incisoK', (req, res) => {
         carga.find({}, function (err, response) {
             if (!err) {
                 let lista_partidos = [];
@@ -166,9 +166,9 @@ module.exports = (app, carga) => {
                         }
                     }
                 }
-                var info_temporadas=[];
+                var masVictorias=[];
                 let sortBy = [{
-                    prop: 'GF',
+                    prop: 'PG',
                     direction: -1
                 }];
                 for (let j = 0; j < lista_tablas.length; j++) {
@@ -181,27 +181,122 @@ module.exports = (app, carga) => {
                         return result;
                     })
                     for(let k=0;k<lista_tablas[j].equipos.length;k++){
-                        lista_tablas[j].equipos[k].posicion=k+1;
+                        var victoria_equipos={
+                            Equipo:lista_tablas[j].equipos[k].equipo,
+                            Victorias:lista_tablas[j].equipos[k].PG
+                        }
+                        var existe=false;
+                        for(let l=0;l<masVictorias.length;l++){
+                            if(masVictorias[l].Equipo==victoria_equipos.Equipo){
+                                masVictorias[l].Victorias+=victoria_equipos.Victorias;
+                                existe=true;
+                                break;
+                            }
+                        }
+                        if(existe==false){
+                            masVictorias.push(victoria_equipos);
+                        }
                     }
-                    var info={
-                        Temporada:lista_tablas[j].temporada,
-                        GolesTotales:lista_tablas[j].golesTotales,
-                        MayorAnotador:[],
-                        MenorAnotador:[]
-                    }
-                    var masAnotador={
-                        Equipo:lista_tablas[j].equipos[0].equipo,
-                        Goles:lista_tablas[j].equipos[0].GF
-                    }
-                    var menosAnotador={
-                        Equipo:lista_tablas[j].equipos[lista_tablas[j].numEquipos-1].equipo,
-                        Goles:lista_tablas[j].equipos[lista_tablas[j].numEquipos-1].GF
-                    }
-                    info.MayorAnotador.push(masAnotador);
-                    info.MenorAnotador.push(menosAnotador);
-                    info_temporadas.push(info);
+                    
                 }
-                res.send(info_temporadas);
+
+                var masDerrotas=[];
+                sortBy[0].prop='PP';
+                for (let j = 0; j < lista_tablas.length; j++) {
+                    lista_tablas[j].equipos.sort(function (a, b) {
+                        let i = 0, result = 0;
+                        while (i < sortBy.length && result == 0) {
+                            result = sortBy[i].direction * (a[sortBy[i].prop] < b[sortBy[i].prop] ? -1 : (a[sortBy[i].prop] > b[sortBy[i].prop] ? 1 : 0));
+                            i++;
+                        }
+                        return result;
+                    })
+                    for(let k=0;k<lista_tablas[j].equipos.length;k++){
+                        var derrota_equipos={
+                            Equipo:lista_tablas[j].equipos[k].equipo,
+                            Derrotas:lista_tablas[j].equipos[k].PP
+                        }
+                        var existe=false;
+                        for(let l=0;l<masDerrotas.length;l++){
+                            if(masDerrotas[l].Equipo==derrota_equipos.Equipo){
+                                masDerrotas[l].Derrotas+=derrota_equipos.Derrotas;
+                                existe=true;
+                                break;
+                            }
+                        }
+                        if(existe==false){
+                            masDerrotas.push(derrota_equipos);
+                        }
+                    }
+                    
+                }
+
+                var masEmpates=[];
+                sortBy[0].prop='PE';
+                for (let j = 0; j < lista_tablas.length; j++) {
+                    lista_tablas[j].equipos.sort(function (a, b) {
+                        let i = 0, result = 0;
+                        while (i < sortBy.length && result == 0) {
+                            result = sortBy[i].direction * (a[sortBy[i].prop] < b[sortBy[i].prop] ? -1 : (a[sortBy[i].prop] > b[sortBy[i].prop] ? 1 : 0));
+                            i++;
+                        }
+                        return result;
+                    })
+                    for(let k=0;k<lista_tablas[j].equipos.length;k++){
+                        var empate_equipos={
+                            Equipo:lista_tablas[j].equipos[k].equipo,
+                            Empates:lista_tablas[j].equipos[k].PE
+                        }
+                        var existe=false;
+                        for(let l=0;l<masEmpates.length;l++){
+                            if(masEmpates[l].Equipo==empate_equipos.Equipo){
+                                masEmpates[l].Empates+=empate_equipos.Empates;
+                                existe=true;
+                                break;
+                            }
+                        }
+                        if(existe==false){
+                            masEmpates.push(empate_equipos);
+                        }
+                    }
+                    
+                }
+                var resumen={
+                    MasVictorias:[],
+                    MasDerrotas:[],
+                    MasEmpates:[]
+                }
+                sortBy[0].prop='Victorias';
+                masVictorias.sort(function (a, b) {
+                    let i = 0, result = 0;
+                    while (i < sortBy.length && result == 0) {
+                        result = sortBy[i].direction * (a[sortBy[i].prop] < b[sortBy[i].prop] ? -1 : (a[sortBy[i].prop] > b[sortBy[i].prop] ? 1 : 0));
+                        i++;
+                    }
+                    return result;
+                })
+                resumen.MasVictorias.push(masVictorias[0]);
+                sortBy[0].prop='Derrotas';
+                masDerrotas.sort(function (a, b) {
+                    let i = 0, result = 0;
+                    while (i < sortBy.length && result == 0) {
+                        result = sortBy[i].direction * (a[sortBy[i].prop] < b[sortBy[i].prop] ? -1 : (a[sortBy[i].prop] > b[sortBy[i].prop] ? 1 : 0));
+                        i++;
+                    }
+                    return result;
+                })
+                resumen.MasDerrotas.push(masDerrotas[0]);
+                sortBy[0].prop='Empates';
+                masEmpates.sort(function (a, b) {
+                    let i = 0, result = 0;
+                    while (i < sortBy.length && result == 0) {
+                        result = sortBy[i].direction * (a[sortBy[i].prop] < b[sortBy[i].prop] ? -1 : (a[sortBy[i].prop] > b[sortBy[i].prop] ? 1 : 0));
+                        i++;
+                    }
+                    return result;
+                })
+                resumen.MasEmpates.push(masEmpates[0]);
+                res.send(resumen);
             }
             else {
                 res.send(err);

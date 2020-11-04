@@ -31,6 +31,12 @@ const carga= mongoose.model("Carga",cargaSchema);
 
 //---------------------------------------------------ENDPOINTS------------------------------------------------------------
 const prueba = require('./endpoints/prueba')(app,carga);
+const incisoA = require('./endpoints/incisoA')(app,carga);
+const incisoB = require('./endpoints/incisoB')(app,carga);
+const incisoC = require('./endpoints/incisoC')(app,carga);
+
+const incisoD = require('./endpoints/incisoD')(app,carga);
+
 const incisoE = require('./endpoints/incisoE')(app,carga);
 const incisoF = require('./endpoints/incisoF')(app,carga);
 const incisoG = require('./endpoints/incisoG')(app,carga);
